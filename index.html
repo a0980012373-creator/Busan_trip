@@ -3,188 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Busan Trip - 盈穎的釜山冒險</title>
-    <!-- Tailwind CSS & Lucide Icons -->
+    <title>盈穎的釜山冒險 - Busan 2026</title>
+    <!-- Tailwind CSS, Lucide Icons, Vue 3, Sortable.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- Sortable.js for Drag & Drop -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    
     <style>
-        /* 延伸底色至背景 */
-        body { background-color: #E8F1F8; font-family: 'Noto Sans TC', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #E6F3F8; margin: 0; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
-        .card-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        .active-tab { color: #2563eb; font-weight: bold; }
-        .active-date { background-color: #2563eb; color: white; transform: scale(1.1); }
+        .glass-morphism { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); }
+        .active-date { background: #2D6A4F; color: white; box-shadow: 0 4px 10px rgba(45, 106, 79, 0.3); }
+        .tab-active { color: #0077B6; border-bottom: 3px solid #0077B6; }
+        /* 頁首圓弧與負邊距效果 */
+        .content-overlap { margin-top: -40px; border-radius: 40px 40px 0 0; background: #E6F3F8; position: relative; z-index: 10; }
     </style>
 </head>
 <body>
 
-<div id="app" class="max-w-md mx-auto min-h-screen relative pb-24">
+<div id="app">
     <!-- Header Banner -->
-    <header class="relative h-[250px] overflow-hidden">
-        <img src="Gemini_Generated_Image_tghqg5tghqg5tghq.png" alt="Busan Banner" class="w-full h-full object-cover">
+    <div class="relative h-[250px] w-full overflow-hidden">
+        <!-- 圖片路徑修正 -->
+        <img src="Gemini_Generated_Image_tghqg5tghqg5tghq.jpg" alt="Busan" class="w-full h-full object-cover">
         
-        <!-- Floating Tabs -->
-        <nav class="absolute bottom-12 right-4 flex space-x-3 glass-nav p-2 rounded-full shadow-lg">
-            <button @click="currentTab = 'itinerary'" :class="{'active-tab': currentTab === 'itinerary'}">
-                <i data-lucide="map-pin" class="w-6 h-6"></i>
-            </button>
-            <button @click="currentTab = 'info'" :class="{'active-tab': currentTab === 'info'}">
-                <i data-lucide="info" class="w-6 h-6"></i>
-            </button>
-            <button @click="currentTab = 'shopping'" :class="{'active-tab': currentTab === 'shopping'}">
-                <i data-lucide="shopping-basket" class="w-6 h-6"></i>
-            </button>
-            <button @click="currentTab = 'expense'" :class="{'active-tab': currentTab === 'expense'}">
-                <i data-lucide="wallet" class="w-6 h-6"></i>
-            </button>
-        </nav>
-    </header>
+        <!-- Floating Tabs (Top Right) -->
+        <div class="absolute bottom-16 right-4 glass-morphism rounded-2xl flex p-1 shadow-xl">
+            <button @click="tab = 'schedule'" :class="{'tab-active': tab === 'schedule'}" class="p-3"><i data-lucide="map-pin"></i></button>
+            <button @click="tab = 'info'" :class="{'tab-active': tab === 'info'}" class="p-3"><i data-lucide="info"></i></button>
+            <button @click="tab = 'shop'" :class="{'tab-active': tab === 'shop'}" class="p-3"><i data-lucide="shopping-basket"></i></button>
+            <button @click="tab = 'cost'" :class="{'tab-active': tab === 'cost'}" class="p-3"><i data-lucide="wallet"></i></button>
+        </div>
+    </div>
 
-    <!-- Main Content Area with Arc Bridge -->
-    <main class="relative -mt-10 bg-[#E8F1F8] rounded-t-[40px] px-5 pt-8 min-h-[600px]">
+    <!-- Main Content Overlap Area -->
+    <div class="content-overlap p-6 min-h-screen">
         
-        <!-- Tab: Itinerary -->
-        <div v-if="currentTab === 'itinerary'">
-            <!-- Weather Info -->
-            <div class="flex items-center justify-between bg-white/50 p-4 rounded-2xl mb-6 card-shadow">
+        <!-- 1. 每日行程表 -->
+        <div v-if="tab === 'schedule'">
+            <!-- 天氣資訊 -->
+            <div class="bg-white/80 rounded-3xl p-4 mb-6 flex items-center justify-between shadow-sm border border-white">
                 <div class="flex items-center">
-                    <i data-lucide="sun" class="w-8 h-8 text-yellow-500 mr-3"></i>
+                    <i data-lucide="cloud-sun" class="text-blue-400 mr-2"></i>
                     <div>
-                        <p class="text-xs text-gray-500">釜山即時天氣</p>
-                        <p class="font-bold text-lg">18°C <span class="text-sm font-normal text-gray-400">體感 16°C</span></p>
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-widest">Busan Weather</p>
+                        <p class="text-xl font-bold text-gray-800">18°C <span class="text-sm font-normal text-gray-400">Feels like 16°C</span></p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-sm font-medium">晴時多雲</p>
+                <div class="text-right text-xs text-gray-400">5/10 (Sun)</div>
+            </div>
+
+            <!-- 橫向滑動日期選單 -->
+            <div class="flex space-x-4 overflow-x-auto hide-scrollbar mb-8 py-2">
+                <div v-for="d in days" :key="d.date" 
+                     @click="selectedDate = d.date"
+                     class="flex flex-col items-center min-w-[65px] py-3 rounded-2xl transition-all"
+                     :class="selectedDate === d.date ? 'active-date' : 'bg-white text-gray-400'">
+                    <span class="text-[10px] font-bold uppercase tracking-tighter">{{ d.weekday }}</span>
+                    <span class="text-xl font-black">{{ d.dayNum }}</span>
                 </div>
             </div>
 
-            <!-- Date Slider -->
-            <div class="flex space-x-4 overflow-x-auto hide-scrollbar mb-6 py-2">
-                <div v-for="day in schedule" :key="day.date" 
-                     @click="selectedDate = day.date"
-                     class="flex flex-col items-center min-w-[60px] p-2 rounded-2xl transition-all cursor-pointer"
-                     :class="selectedDate === day.date ? 'active-date' : 'bg-white text-gray-400'">
-                    <span class="text-xs uppercase">{{ day.weekday }}</span>
-                    <span class="text-xl font-bold">{{ day.dayNum }}</span>
-                </div>
-            </div>
-
-            <!-- Itinerary List -->
+            <!-- 行程卡片清單 (支援拖曳) -->
             <div id="itinerary-list" class="space-y-6">
-                <div v-for="(item, index) in currentDayItems" :key="item.id" class="relative">
-                    <!-- Flight Card Style -->
-                    <div v-if="item.type === '航班'" class="bg-blue-600 text-white p-5 rounded-3xl shadow-lg">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs bg-white/20 px-3 py-1 rounded-full">{{ item.category }}</span>
-                            <span class="font-bold">{{ item.flightNo }}</span>
+                <div v-for="(item, idx) in filteredItems" :key="item.id" class="relative">
+                    <!-- 航班特別樣式 -->
+                    <div v-if="item.type === '航班'" class="bg-[#0077B6] text-white p-6 rounded-[30px] shadow-lg">
+                        <div class="flex justify-between items-center mb-4 opacity-80 text-xs">
+                            <span>{{ item.flightNo }}</span>
+                            <span>{{ item.category }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <div class="text-center">
-                                <p class="text-2xl font-black">{{ item.from }}</p>
-                                <p class="text-xs opacity-80">{{ item.depTime }}</p>
-                            </div>
-                            <i data-lucide="plane" class="w-6 h-6 rotate-90"></i>
-                            <div class="text-center">
-                                <p class="text-2xl font-black">{{ item.to }}</p>
-                                <p class="text-xs opacity-80">{{ item.arrTime }}</p>
-                            </div>
+                            <div class="text-center"><p class="text-2xl font-bold">{{ item.from }}</p><p class="text-[10px] opacity-70">{{ item.depTime }}</p></div>
+                            <i data-lucide="plane" class="rotate-90 opacity-50"></i>
+                            <div class="text-center"><p class="text-2xl font-bold">{{ item.to }}</p><p class="text-[10px] opacity-70">{{ item.arrTime }}</p></div>
                         </div>
                     </div>
 
-                    <!-- Standard Card Style -->
-                    <div v-else @click="openGoogleMap(item.name)" class="bg-white p-5 rounded-3xl card-shadow border border-white/50">
+                    <!-- 一般行程卡片 -->
+                    <div v-else @click="goMap(item.name)" class="bg-white rounded-[30px] p-5 shadow-sm border border-white hover:shadow-md transition-shadow">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-gray-800 text-lg">{{ item.name }}</h3>
-                            <span class="text-[10px] px-2 py-1 rounded-md bg-blue-50 text-blue-500 font-bold">{{ item.type }}</span>
+                            <span class="text-[10px] bg-blue-50 text-blue-500 px-2 py-1 rounded-full font-bold">{{ item.type }}</span>
+                            <i data-lucide="more-vertical" class="w-4 h-4 text-gray-300"></i>
                         </div>
-                        <p class="text-sm text-gray-500 mb-2 flex items-center">
-                            <i data-lucide="clock" class="w-3 h-3 mr-1"></i> {{ item.time }}
-                        </p>
-                        <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-xl italic">{{ item.note }}</p>
+                        <h3 class="text-lg font-bold text-gray-800 leading-tight mb-2">{{ item.name }}</h3>
+                        <div class="text-xs text-gray-400 space-y-1">
+                            <p v-if="item.hours" class="flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i> {{ item.hours }}</p>
+                            <p class="italic text-gray-500 mt-2">{{ item.note }}</p>
+                        </div>
                     </div>
 
-                    <!-- Transport Info -->
-                    <div v-if="index < currentDayItems.length - 1" class="py-4 ml-8 border-l-2 border-dashed border-blue-200 flex items-center">
-                        <div class="bg-white px-3 py-1 rounded-full text-[10px] text-blue-400 border border-blue-100 flex items-center shadow-sm">
-                            <i data-lucide="car" class="w-3 h-3 mr-1"></i> 25 mins
-                        </div>
+                    <!-- 交通時間顯示 -->
+                    <div v-if="idx < filteredItems.length - 1" class="ml-10 my-3 flex items-center space-x-2 border-l-2 border-dashed border-blue-100 pl-4 py-2">
+                        <i data-lucide="car" class="w-3 h-3 text-blue-300"></i>
+                        <span class="text-[10px] text-blue-300 font-bold tracking-widest uppercase">20 min travel</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Placeholder for other tabs (Simple implementation) -->
-        <div v-if="currentTab === 'info'" class="space-y-4">
-            <h2 class="text-2xl font-bold text-blue-900 mb-6">旅遊資訊</h2>
-            <div class="bg-white p-6 rounded-3xl shadow-sm">
-                <p class="text-sm text-gray-500 mb-1">今日匯率換算 (KRW ➔ TWD)</p>
-                <div class="flex items-center space-x-3">
-                    <input type="number" v-model="krwInput" class="w-full bg-gray-100 p-3 rounded-xl outline-none" placeholder="輸入韓元">
-                    <span class="text-blue-500 font-bold">≈ {{ (krwInput * 0.024).toFixed(0) }} TWD</span>
+        <!-- 2. 資訊頁面 -->
+        <div v-if="tab === 'info'" class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+                <h3 class="font-bold mb-4 flex items-center text-blue-600"><i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i> 匯率換算</h3>
+                <div class="flex items-center space-x-4">
+                    <input type="number" v-model="krw" class="w-full bg-gray-50 p-3 rounded-xl border-none outline-none text-lg font-bold" placeholder="KRW">
+                    <i data-lucide="arrow-right-left" class="text-gray-300"></i>
+                    <div class="w-full text-lg font-bold text-blue-500">{{ (krw * 0.024).toFixed(0) }} TWD</div>
                 </div>
             </div>
-            <!-- Flight/Hotel details can be expanded here -->
+            
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+                <h3 class="font-bold mb-4 text-gray-800">🏠 住宿資訊</h3>
+                <div class="space-y-3 text-sm">
+                    <p class="font-bold">南浦馬格南飯店</p>
+                    <p class="text-gray-500">📞 +82 51-240-2000</p>
+                    <button @click="goMap('Magnum Hotel Nampo')" class="text-blue-500 font-bold">開啟導航 →</button>
+                </div>
+            </div>
         </div>
 
-    </main>
+        <!-- 3. 購物清單 (簡易示意) -->
+        <div v-if="tab === 'shop'" class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center">
+                <div class="w-full h-32 bg-gray-100 rounded-2xl mb-2 flex items-center justify-center text-gray-300">📸</div>
+                <p class="text-sm font-bold">貝殼夾心餅</p>
+            </div>
+        </div>
+
+        <!-- 4. 花費 (簡易示意) -->
+        <div v-if="tab === 'cost'">
+            <div class="bg-blue-600 text-white p-8 rounded-3xl mb-6 shadow-lg">
+                <p class="text-xs opacity-70">Total Spending</p>
+                <h2 class="text-3xl font-black">¥ 45,200</h2>
+            </div>
+        </div>
+
+    </div>
 
     <!-- Floating Action Button -->
-    <button class="fixed bottom-8 right-8 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center transform active:scale-95 transition-all">
-        <i data-lucide="plus" class="w-8 h-8"></i>
+    <button class="fixed bottom-8 right-8 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center transform active:scale-90 transition-transform z-50">
+        <i data-lucide="plus"></i>
     </button>
 </div>
 
 <script>
-    const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, onMounted } = Vue;
 
-    createApp({
-        setup() {
-            const currentTab = ref('itinerary');
-            const selectedDate = ref('2026-05-10');
-            const krwInput = ref(10000);
+createApp({
+    setup() {
+        const tab = ref('schedule');
+        const selectedDate = ref('2026-05-10');
+        const krw = ref(10000);
 
-            const schedule = [
-                { date: '2026-05-10', weekday: 'Sun', dayNum: '10' },
-                { date: '2026-05-11', weekday: 'Mon', dayNum: '11' },
-                { date: '2026-05-12', weekday: 'Tue', dayNum: '12' },
-                { date: '2026-05-13', weekday: 'Wed', dayNum: '13' },
-                { date: '2026-05-14', weekday: 'Thu', dayNum: '14' },
-                { date: '2026-05-15', weekday: 'Fri', dayNum: '15' },
-                { date: '2026-05-16', weekday: 'Sat', dayNum: '16' },
-            ];
+        const days = [
+            { date: '2026-05-10', weekday: 'Sun', dayNum: '10' },
+            { date: '2026-05-11', weekday: 'Mon', dayNum: '11' },
+            { date: '2026-05-12', weekday: 'Tue', dayNum: '12' },
+            { date: '2026-05-13', weekday: 'Wed', dayNum: '13' },
+            { date: '2026-05-14', weekday: 'Thu', dayNum: '14' },
+            { date: '2026-05-15', weekday: 'Fri', dayNum: '15' },
+            { date: '2026-05-16', weekday: 'Sat', dayNum: '16' },
+        ];
 
-            const itineraryItems = ref([
-                { id: 1, date: '2026-05-10', type: '航班', category: '去程', flightNo: 'BX794', from: 'TPE', to: 'PUS', depTime: '13:30', arrTime: '17:05' },
-                { id: 2, date: '2026-05-10', type: '住宿', name: '南浦馬格南飯店', time: '18:30 Check-in', note: '放下行李，準備去 BIFF 廣場' },
-                { id: 3, date: '2026-05-11', type: '景點', name: '影島 ARTE MUSEUM', time: '10:00 - 12:00', note: '拍攝夢幻光影大片，全球最大沉浸式藝術展' },
-                { id: 4, date: '2026-05-11', type: '美食', name: 'Miffy Cafe Busan', time: '12:00 - 13:30', note: '亮橘色貨櫃屋，享用可愛甜點' },
-            ]);
+        const items = ref([
+            { id: 1, date: '2026-05-10', type: '航班', category: '去程', flightNo: '釜山航空', from: 'TPE', to: 'PUS', depTime: '13:30', arrTime: '17:05' },
+            { id: 2, date: '2026-05-10', type: '住宿', name: '南浦馬格南飯店', note: '辦理入住，放下行李。' },
+            { id: 3, date: '2026-05-11', type: '景點', name: '影島 ARTE MUSEUM', hours: '10:00 - 12:00', note: '體驗全球最大沉浸式藝術展，拍攝夢幻光影大片。' },
+            { id: 4, date: '2026-05-11', type: '美食', name: 'Miffy Cafe Busan', note: '亮橘色貨櫃屋，享用可愛甜點。' },
+            // ... 可自行增加更多行程內容
+        ]);
 
-            const currentDayItems = computed(() => {
-                return itineraryItems.value.filter(item => item.date === selectedDate.value);
-            });
+        const filteredItems = computed(() => {
+            return items.value.filter(i => i.date === selectedDate.value);
+        });
 
-            const openGoogleMap = (query) => {
-                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ' Busan')}`, '_blank');
-            };
+        const goMap = (name) => {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' Busan')}`, '_blank');
+        };
 
-            onMounted(() => {
-                lucide.createIcons();
-                // Initialize Sortable
-                const el = document.getElementById('itinerary-list');
-                if(el) Sortable.create(el, { animation: 150 });
-            });
+        onMounted(() => {
+            lucide.createIcons();
+            const el = document.getElementById('itinerary-list');
+            if (el) Sortable.create(el, { animation: 150 });
+        });
 
-            return { currentTab, selectedDate, schedule, itineraryItems, currentDayItems, openGoogleMap, krwInput };
-        }
-    }).mount('#app');
+        return { tab, days, selectedDate, items, filteredItems, goMap, krw };
+    }
+}).mount('#app');
 </script>
 </body>
 </html>
